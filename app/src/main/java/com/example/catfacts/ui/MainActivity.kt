@@ -4,26 +4,32 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.BasicText
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.catfacts.R
+import com.example.catfacts.data.Fact
 import com.example.catfacts.ui.theme.CatFactsTheme
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
+
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -40,83 +46,101 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Box(mainViewModel = model)
-                    Loader()
+                    MainScreen(mainViewModel = model)
                 }
             }
         }
     }
 
-
-}
-
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Composable
-fun Box(mainViewModel: MainViewModel) {
-    // https://stackoverflow.com/questions/69230831/jetpack-compose-observe-mutablestateof-in-viewmodel
-
-    val (factText, setFactText) = remember {
-        mutableStateOf("")
-    }
-
-    val composableScope = rememberCoroutineScope()
-
-    Fact(factText)
-
-    Button(
-        onClick = {
-
-            composableScope.launch {
-//                                val factRequest = factRepository.getFact()
-//                                if (factRequest.isSuccessful) {
-//                                    val body = factRequest.body()
-//
-//                                    val fact = body?.fact ?: ""
-//
-//                                    setFactText(fact)
-//
-//                                } else {
-//                                    Log.d("Batseba", "falha ao obter resultado")
-//                                }
-            }
-
-
-        },
-        modifier = Modifier
-            .wrapContentHeight()
-            .padding(16.dp)
-            .fillMaxWidth(),
-
-        ) {
-        Text(text = "Get Fact")
-    }
-
-}
-
-@Composable
-fun Fact(name: String) {
-    Text(text = "$name!")
 }
 
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     CatFactsTheme {
-        Greeting("Android")
+
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun Loader() {
-    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.cat_loader))
-    val progress by animateLottieCompositionAsState(composition)
+fun MainScreen(mainViewModel: MainViewModel) {
+
+    // https://stackoverflow.com/questions/69230831/jetpack-compose-observe-mutablestateof-in-viewmodel
+
+    val loading by mainViewModel.loading.observeAsState(initial = false)
+
+    val fact by mainViewModel.fact.observeAsState()
+
+    val (isPlaying, setIsPlaying) = remember {
+        mutableStateOf(false)
+    }
+
+    Column(
+        Modifier
+            .background(Color.White)
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+        // if (loading && isPlaying) {
+
+        if (loading) {
+            Loader(setIsPlaying)
+        } else {
+
+            Fact(fact?.getContentIfNotHandled())
+
+            GetFact {
+                mainViewModel.loadFact()
+            }
+        }
+    }
+}
+
+@Composable
+fun Fact(fact: Fact?) {
+
+    val text = fact?.fact ?: "Click in the button to get a new fact"
+
+    Box(
+        modifier = Modifier
+            .padding(16.dp)
+    ) {
+        Text(text = text)
+    }
+
+
+}
+
+@Composable
+fun GetFact(onClick: () -> Unit) {
+    Button(
+        onClick = onClick,
+        modifier = Modifier
+            .wrapContentHeight()
+            .padding(16.dp)
+            .fillMaxWidth()
+    ) {
+        BasicText(text = "Get Fact")
+    }
+}
+
+@Composable
+fun Loader(setIsPlaying: (Boolean) -> Unit) {
+    // https://stackoverflow.com/a/64073703/2811504
+
+    val composition by rememberLottieComposition(
+        spec = LottieCompositionSpec.RawRes(R.raw.cat_loader)
+    )
+
+//    val progress by animateLottieCompositionAsState(
+//        composition = composition,
+//        iterations = LottieConstants.IterateForever,
+//    )
+
     LottieAnimation(
-        composition,
-        progress,
+        composition = composition,
+        iterations = LottieConstants.IterateForever,
     )
 }
