@@ -11,7 +11,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
-@Module
+@Module(includes = [ViewModelModule::class])
 object AppModule {
 
     @Provides

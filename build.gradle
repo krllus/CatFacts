@@ -4,8 +4,10 @@
 buildscript {
 
     ext {
-        compose_version = '1.2.0-beta03'
+        compose_version = "1.2.0-beta03"
+        lottie_version = "5.2.0"
     }
+
     dependencies {
         classpath "com.google.dagger:hilt-android-gradle-plugin:2.38.1"
     }
