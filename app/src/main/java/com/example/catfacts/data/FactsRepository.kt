@@ -3,7 +3,7 @@ package com.example.catfacts.data
 import com.example.catfacts.api.CatFactsApi
 import com.example.catfacts.data.remote.Result
 import com.example.catfacts.di.IoDispatcher
-import com.example.catfacts.models.Fact
+import com.example.catfacts.data.model.Fact
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import javax.inject.Inject

@@ -19,6 +19,15 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += [
+                        "room.incremental"     : "true",
+                        "room.expandProjection": "true"
+                ]
+            }
+        }
     }
 
     buildTypes {
@@ -67,9 +76,20 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-ktx:2.4.2")
     implementation("androidx.navigation:navigation-ui-ktx:2.4.2")
 
+    // database
+    implementation("androidx.room:room-runtime:${versions.room}")
+    implementation("androidx.room:room-ktx:${versions.room}")
+    annotationProcessor("androidx.room:room-compiler:${versions.room}")
+    kapt("androidx.room:room-compiler:${versions.room}")
+
+    // database related
+    // date-time
+    implementation("org.threeten:threetenbp:1.6.0")
+
     // di
     implementation("com.google.dagger:hilt-android:${versions.hilt}")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+    kapt("com.google.dagger:hilt-android-compiler:${versions.hilt}")
 
     // network
     implementation("com.google.code.gson:gson:2.9.0")
@@ -89,8 +109,6 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.5.0-rc02")
     implementation("com.airbnb.android:lottie-compose:${versions.lottie}")
     implementation("com.google.android.material:material:1.6.1")
-
-    kapt("com.google.dagger:hilt-android-compiler:${versions.hilt}")
 
     debugImplementation("androidx.compose.ui:ui-tooling:${versions.compose}")
     debugImplementation("androidx.compose.ui:ui-test-manifest:${versions.compose}")

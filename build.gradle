@@ -5,13 +5,14 @@ buildscript {
 
     ext.versions = [
 
-            "compose": "1.2.0-rc02",
-            "hilt"   : "2.42",
-            "lottie" : "5.2.0",
+            "compose"    : "1.2.0-rc02",
+            "hilt"       : "2.42",
+            "lottie"     : "5.2.0",
+            "room"       : "2.4.2",
 
-            "min_sdk"                 : 25,
-            "target_sdk"              : 32,
-            "compile_sdk"             : 32
+            "min_sdk"    : 25,
+            "target_sdk" : 32,
+            "compile_sdk": 32
     ]
 
     ext.deps = [

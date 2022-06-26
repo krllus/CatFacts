@@ -1,4 +1,5 @@
-package com.example.catfacts.models
+package com.example.catfacts.data.model
+
 
 data class Fact(
     val length: Int,

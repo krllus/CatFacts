@@ -1,6 +1,6 @@
 package com.example.catfacts.api
 
-import com.example.catfacts.models.Fact
+import com.example.catfacts.data.model.Fact
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Response

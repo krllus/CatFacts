@@ -13,5 +13,7 @@
     <string name="navigation_item_facts">Facts</string>
     <string name="navigation_item_facts_description">Facts</string>
 
+    <string name="button_retry">Retry</string>
+
 
 </resources>

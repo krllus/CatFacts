@@ -5,6 +5,7 @@ import com.example.catfacts.data.CapturesRepository
 import com.example.catfacts.data.DefaultCapturesRepository
 import com.example.catfacts.data.DefaultFactRepository
 import com.example.catfacts.data.FactRepository
+import com.example.catfacts.data.local.CapturesDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -34,9 +35,11 @@ object AppModule {
 
     @Provides
     fun provideCapturesRepository(
+        capturesDao: CapturesDao,
         @IoDispatcher dispatcher: CoroutineDispatcher
     ): CapturesRepository {
         return DefaultCapturesRepository(
+            capturesDao,
             dispatcher
         )
     }
