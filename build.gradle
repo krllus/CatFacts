@@ -3,13 +3,29 @@
 
 buildscript {
 
-    ext {
-        compose_version = "1.2.0-beta03"
-        lottie_version = "5.2.0"
+    ext.versions = [
+
+            "compose": "1.2.0-rc02",
+            "hilt"   : "2.42",
+            "lottie" : "5.2.0",
+
+            "min_sdk"                 : 25,
+            "target_sdk"              : 32,
+            "compile_sdk"             : 32
+    ]
+
+    ext.deps = [
+            "hilt_gradle_plugin": "com.google.dagger:hilt-android-gradle-plugin:${versions.hilt}",
+    ]
+
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://maven.google.com' }
     }
 
     dependencies {
-        classpath "com.google.dagger:hilt-android-gradle-plugin:2.38.1"
+        classpath(deps.hilt_gradle_plugin)
     }
 }
 

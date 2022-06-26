@@ -1,15 +1,9 @@
-package com.example.catfacts.ui
+package com.example.catfacts.screen.fact
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -19,57 +13,32 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.catfacts.R
 import com.example.catfacts.data.Fact
-import com.example.catfacts.ui.theme.CatFactsTheme
-import dagger.hilt.android.AndroidEntryPoint
 
 
-@AndroidEntryPoint
-class MainActivity : ComponentActivity() {
-
-    private val model: MainViewModel by viewModels()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        setContent {
-            CatFactsTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    MainScreen(mainViewModel = model)
-                }
-            }
-        }
-    }
-
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    CatFactsTheme {
-
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun DefaultPreview() {
+//    CatFactsTheme {
+//        FactScreen(FactViewModel())
+//    }
+//}
 
 @Composable
-fun MainScreen(mainViewModel: MainViewModel) {
+fun FactScreen(factsViewModel: FactsViewModel) {
 
     // https://stackoverflow.com/questions/69230831/jetpack-compose-observe-mutablestateof-in-viewmodel
 
-    val loading by mainViewModel.loading.observeAsState(initial = false)
+    val loading by factsViewModel.loading.observeAsState(initial = false)
 
-    val fact by mainViewModel.fact.observeAsState()
+    val fact by factsViewModel.fact.observeAsState()
 
     val (isPlaying, setIsPlaying) = remember {
         mutableStateOf(false)
@@ -92,7 +61,7 @@ fun MainScreen(mainViewModel: MainViewModel) {
             Fact(fact?.getContentIfNotHandled())
 
             GetFact {
-                mainViewModel.loadFact()
+                factsViewModel.loadFact()
             }
         }
     }
@@ -109,8 +78,6 @@ fun Fact(fact: Fact?) {
     ) {
         Text(text = text)
     }
-
-
 }
 
 @Composable
