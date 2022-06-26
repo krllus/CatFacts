@@ -1,6 +1,8 @@
 package com.example.catfacts.di
 
 import com.example.catfacts.api.CatFactsApi
+import com.example.catfacts.data.CapturesRepository
+import com.example.catfacts.data.DefaultCapturesRepository
 import com.example.catfacts.data.DefaultFactRepository
 import com.example.catfacts.data.FactRepository
 import dagger.Module
@@ -21,12 +23,21 @@ object AppModule {
     }
 
     @Provides
-    fun provideFactRepository(
+    fun provideFactsRepository(
         api: CatFactsApi,
         @IoDispatcher dispatcher: CoroutineDispatcher
     ): FactRepository {
         return DefaultFactRepository(
             api, dispatcher
+        )
+    }
+
+    @Provides
+    fun provideCapturesRepository(
+        @IoDispatcher dispatcher: CoroutineDispatcher
+    ): CapturesRepository {
+        return DefaultCapturesRepository(
+            dispatcher
         )
     }
 

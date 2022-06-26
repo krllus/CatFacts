@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.catfacts.data.Fact
+import com.example.catfacts.models.Fact
 import com.example.catfacts.data.FactRepository
 import com.example.catfacts.data.remote.Result
 import com.example.catfacts.utils.ErrorMessage
