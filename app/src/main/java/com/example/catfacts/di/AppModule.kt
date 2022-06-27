@@ -1,11 +1,11 @@
 package com.example.catfacts.di
 
 import com.example.catfacts.api.CatFactsApi
-import com.example.catfacts.data.CapturesRepository
-import com.example.catfacts.data.DefaultCapturesRepository
+import com.example.catfacts.data.JournalRepository
+import com.example.catfacts.data.DefaultJournalRepository
 import com.example.catfacts.data.DefaultFactRepository
 import com.example.catfacts.data.FactRepository
-import com.example.catfacts.data.local.CapturesDao
+import com.example.catfacts.data.local.JournalDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -35,11 +35,11 @@ object AppModule {
 
     @Provides
     fun provideCapturesRepository(
-        capturesDao: CapturesDao,
+        journalDao: JournalDao,
         @IoDispatcher dispatcher: CoroutineDispatcher
-    ): CapturesRepository {
-        return DefaultCapturesRepository(
-            capturesDao,
+    ): JournalRepository {
+        return DefaultJournalRepository(
+            journalDao,
             dispatcher
         )
     }

@@ -6,13 +6,13 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.catfacts.data.converters.CatFactsTypeConverters
-import com.example.catfacts.data.model.Capture
+import com.example.catfacts.data.model.Journal
 
-@Database(entities = [Capture::class], version = 1, exportSchema = false)
+@Database(entities = [Journal::class], version = 1, exportSchema = false)
 @TypeConverters(CatFactsTypeConverters::class)
 abstract class AppDatabase : RoomDatabase() {
 
-    abstract fun capturesDao(): CapturesDao
+    abstract fun journalDao(): JournalDao
 
     companion object {
 

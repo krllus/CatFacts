@@ -1,23 +1,20 @@
 package com.example.catfacts.utils
 
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Home
 import com.example.catfacts.R
 import com.example.catfacts.models.NavigationItem
 
 object Constants {
     val BottomNavigationItens = listOf(
         NavigationItem(
-            label = R.string.navigation_item_captured,
-            icon = Icons.Filled.Add,
-            route = Destination.Captured,
-            contentDescription = R.string.navigation_item_captured_description
+            label = R.string.navigation_item_journal,
+            icon = R.drawable.ic_baseline_notes_24,
+            route = Destination.Journal,
+            contentDescription = R.string.navigation_item_journal_description
         ),
         NavigationItem(
             label = R.string.navigation_item_facts,
-            icon = Icons.Filled.Home,
+            icon = R.drawable.ic_cat,
             route = Destination.Facts,
             contentDescription = R.string.navigation_item_facts_description
         )
@@ -25,6 +22,6 @@ object Constants {
 }
 
 sealed class Destination(val destinationName: String) {
-    object Captured : Destination("captured")
+    object Journal : Destination("journal")
     object Facts : Destination("facts")
 }

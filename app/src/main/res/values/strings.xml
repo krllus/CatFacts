@@ -7,13 +7,16 @@
 
     <string name="action_settings">Settings</string>
 
-    <string name="navigation_item_captured">Captured</string>
-    <string name="navigation_item_captured_description">Captured</string>
+    <string name="navigation_item_journal">Journal</string>
+    <string name="navigation_item_journal_description">Journal</string>
 
     <string name="navigation_item_facts">Facts</string>
     <string name="navigation_item_facts_description">Facts</string>
 
     <string name="button_retry">Retry</string>
+
+    <string name="take_picture_content_description">Camera Icon</string>
+    <string name="take_picture_error_saving">Could not save picture!</string>
 
 
 </resources>

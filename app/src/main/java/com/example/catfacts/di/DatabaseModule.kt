@@ -2,7 +2,7 @@ package com.example.catfacts.di
 
 import android.content.Context
 import com.example.catfacts.data.local.AppDatabase
-import com.example.catfacts.data.local.CapturesDao
+import com.example.catfacts.data.local.JournalDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,8 +23,8 @@ class DatabaseModule {
     }
 
     @Provides
-    fun provideCapturesDao(database: AppDatabase): CapturesDao {
-        return database.capturesDao()
+    fun provideCapturesDao(database: AppDatabase): JournalDao {
+        return database.journalDao()
     }
 
 }
