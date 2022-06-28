@@ -8,17 +8,34 @@ import org.threeten.bp.OffsetDateTime
 
 @Entity(tableName = "table_journal")
 data class Journal(
-    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") val captureId: Long = 0,
-    val description: String,
-    val captureDate: OffsetDateTime? = null
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id")
+    val captureId: Long = 0,
+
+    @ColumnInfo(name = "title")
+    val title: String,
+
+    @ColumnInfo(name = "description")
+    val description: String = "",
+
+    @ColumnInfo(name = "image_file_path")
+    val imageFilePath: String? = null,
+
+    @ColumnInfo(name = "capture_date")
+    val captureDate: OffsetDateTime = OffsetDateTime.now()
 ) {
     companion object {
         fun randomCapture(): Journal {
 
             return Journal(
-                description = RandomTextGenerator.generateRandomText(),
+                title = RandomTextGenerator.generateRandomText(10),
+                description = RandomTextGenerator.generateRandomText(50),
                 captureDate = OffsetDateTime.now()
             )
         }
+    }
+
+    fun displayDescription() : Boolean {
+        return description.isNotEmpty()
     }
 }
