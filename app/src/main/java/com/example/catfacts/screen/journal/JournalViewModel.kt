@@ -7,7 +7,10 @@ import com.example.catfacts.data.model.Journal
 import com.example.catfacts.utils.result.Result
 import com.example.catfacts.utils.result.asResult
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -17,16 +20,15 @@ class JournalViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _uiState =
-        MutableStateFlow(JournalScreenUiState(journalsState = JournalUiState.Loading))
+        MutableStateFlow(JournalScreenUiState(state = JournalUiState.Loading))
 
     val uiState: StateFlow<JournalScreenUiState> = _uiState
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = JournalScreenUiState(journalsState = JournalUiState.Loading)
+            initialValue = JournalScreenUiState(state = JournalUiState.Loading)
         )
 
-    private val captures: Flow<Result<List<Journal>>> = journalRepository.getJournals().asResult()
 
     init {
         viewModelScope.launch {
@@ -44,13 +46,6 @@ class JournalViewModel @Inject constructor(
             }
         }
     }
-
-    fun addRandomCapture() {
-        viewModelScope.launch {
-            journalRepository.addRandomJournal()
-        }
-    }
-
 }
 
 sealed interface JournalUiState {
@@ -60,5 +55,5 @@ sealed interface JournalUiState {
 }
 
 data class JournalScreenUiState(
-    val journalsState: JournalUiState
+    val state: JournalUiState
 )

@@ -13,28 +13,28 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.LottieConstants
-import com.airbnb.lottie.compose.rememberLottieComposition
-import com.example.catfacts.R
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.catfacts.data.model.Fact
 import com.example.catfacts.ui.common.LoadingScreen
+import com.example.catfacts.ui.theme.CatFactsTheme
 
 
-//@Preview(showBackground = true)
-//@Composable
-//fun DefaultPreview() {
-//    CatFactsTheme {
-//        FactScreen(FactViewModel())
-//    }
-//}
+@Preview(showBackground = true)
+@Composable
+fun DefaultPreview() {
+    CatFactsTheme {
+        FactScreen()
+    }
+}
 
 @Composable
-fun FactScreen(factsViewModel: FactsViewModel) {
+fun FactScreen() {
 
     // https://stackoverflow.com/questions/69230831/jetpack-compose-observe-mutablestateof-in-viewmodel
+
+    val factsViewModel: FactsViewModel = hiltViewModel()
 
     val loading by factsViewModel.loading.observeAsState(initial = false)
 

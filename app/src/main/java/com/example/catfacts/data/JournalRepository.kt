@@ -9,7 +9,10 @@ import javax.inject.Inject
 
 interface JournalRepository {
     fun getJournals(): Flow<List<Journal>>
+
     suspend fun addRandomJournal(): Journal
+
+    suspend fun saveJournal(title: String, description: String, pictureAbsolutePath: String?)
 }
 
 class DefaultJournalRepository @Inject constructor(
@@ -22,5 +25,19 @@ class DefaultJournalRepository @Inject constructor(
         val journal = Journal.randomCapture()
         journalDao.insertJournal(journal)
         return journal
+    }
+
+    override suspend fun saveJournal(
+        title: String,
+        description: String,
+        pictureAbsolutePath: String?
+    ) {
+        val journal = Journal(
+            title = title,
+            description = description,
+            imageFilePath = pictureAbsolutePath
+        )
+
+        journalDao.insertJournal(journal)
     }
 }

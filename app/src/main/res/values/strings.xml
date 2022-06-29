@@ -18,5 +18,9 @@
     <string name="take_picture_content_description">Camera Icon</string>
     <string name="take_picture_error_saving">Could not save picture!</string>
 
+    <string name="add_journal_content_description">Add Journal</string>
+    <string name="label_title">Title</string>
+    <string name="label_description">Description</string>
+    <string name="button_save">Save</string>
 
 </resources>

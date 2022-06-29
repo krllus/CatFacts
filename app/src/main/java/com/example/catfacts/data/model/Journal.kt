@@ -10,7 +10,7 @@ import org.threeten.bp.OffsetDateTime
 data class Journal(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    val captureId: Long = 0,
+    val journalId: Long = 0,
 
     @ColumnInfo(name = "title")
     val title: String,

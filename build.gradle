@@ -4,7 +4,7 @@
 buildscript {
 
     ext.versions = [
-
+            "accompanist": "0.24.12-rc",
             "coil"       : "2.1.0",
             "compose"    : "1.2.0-rc02",
             "hilt"       : "2.42",

@@ -8,27 +8,27 @@ import android.provider.MediaStore
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.core.content.FileProvider
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.catfacts.screen.journal.JournalScreen
+import androidx.navigation.navArgument
 import com.example.catfacts.screen.fact.FactScreen
-import com.example.catfacts.ui.common.IconTakePicture
+import com.example.catfacts.screen.journal.JournalCRUDScreen
+import com.example.catfacts.screen.journal.JournalDetailsScreen
+import com.example.catfacts.screen.journal.JournalScreen
 import com.example.catfacts.ui.theme.CatFactsTheme
 import com.example.catfacts.utils.Constants
 import com.example.catfacts.utils.Destination
@@ -41,16 +41,8 @@ import java.util.*
 @AndroidEntryPoint
 class HomeActivity : ComponentActivity() {
 
-    private val viewModel: HomeViewModel by viewModels()
-
-    private val takePicture = registerForActivityResult(
-        ActivityResultContracts.TakePicture()
-    ) { saved ->
-        if (saved) {
-            viewModel.changePictureStatusToCaptured()
-        } else {
-            viewModel.changePictureStatusToError()
-        }
+    companion object {
+        const val KEY_JOURNAL_ID = "journalId"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,29 +53,12 @@ class HomeActivity : ComponentActivity() {
 
                 val navController = rememberNavController()
 
-                val showPictureBottomSheet by viewModel.pictureCaptureStatus.observeAsState(
-                    initial = PictureCaptureStatus.Idle
-                )
-
                 Surface {
-
                     Scaffold(
-
-//                        floatingActionButton = {
-//                            FloatingActionButton(
-//                                onClick = {
-//                                    dispatchTakePictureIntent()
-//                                }
-//                            ) {
-//                                IconTakePicture()
-//                            }
+//                        bottomBar = {
+//                            BottomNavigationBar(navController = navController)
 //                        },
-//
-//                        isFloatingActionButtonDocked = true,
-
-                        bottomBar = {
-                            BottomNavigationBar(navController = navController)
-                        }, content = { padding ->
+                        content = { padding ->
                             NavHostContainer(
                                 navController = navController,
                                 padding = padding
@@ -114,12 +89,11 @@ class HomeActivity : ComponentActivity() {
                         it
                     )
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-                    takePicture.launch(photoURI)
+                    // takePicture.launch(photoURI)
                 }
                 Log.d("HomeActivity", "photoFile: ${photoFile?.path}")
             }
         }
-
     }
 
     @Throws(IOException::class)
@@ -132,7 +106,7 @@ class HomeActivity : ComponentActivity() {
             ".jpg", /* suffix */
             storageDir /* directory */
         ).apply {
-            viewModel.setPictureFile(this)
+            // viewModel.setPictureFile(this)
         }
     }
 
@@ -167,7 +141,8 @@ fun BottomNavigationBar(navController: NavHostController) {
                     Text(
                         text = stringResource(id = navItem.label)
                     )
-                }, alwaysShowLabel = false
+                },
+                alwaysShowLabel = false
 
             )
         }
@@ -187,11 +162,13 @@ fun NavHostContainer(
     padding: PaddingValues
 ) {
 
+    val homeActions = remember(navController) { HomeActions(navController) }
+
     NavHost(
         navController = navController,
 
         //set the start destination as home
-        startDestination = Destination.Facts.destinationName,
+        startDestination = Destination.JournalList.destinationName,
 
         //Set the padding provided by scaffold
         modifier = Modifier.padding(paddingValues = padding),
@@ -199,13 +176,51 @@ fun NavHostContainer(
         builder = {
 
             composable(Destination.Facts.destinationName) {
-                FactScreen(hiltViewModel())
+                FactScreen()
             }
 
-            composable(Destination.Journal.destinationName) {
-                JournalScreen(hiltViewModel())
+            composable(Destination.JournalList.destinationName) {
+                JournalScreen(homeActions)
+            }
+
+            composable(Destination.JournalCrud.destinationName) {
+                JournalCRUDScreen(homeActions)
+            }
+
+            composable(
+                route = Destination.JournalDetails.destinationName,
+                arguments = listOf(
+                    navArgument(HomeActivity.KEY_JOURNAL_ID) { type = NavType.StringType })
+            ) { backStackEntry ->
+                val arguments = requireNotNull(backStackEntry.arguments)
+                JournalDetailsScreen(arguments.getLong(HomeActivity.KEY_JOURNAL_ID), homeActions)
             }
         })
+
+}
+
+class HomeActions(navController: NavHostController) {
+    val journalListScreen: () -> Unit = {
+        navController.navigate(Destination.JournalList.destinationName)
+    }
+
+    val journalCRUDScreen: () -> Unit = {
+        navController.navigate(Destination.JournalCrud.destinationName)
+    }
+
+    val journalDetailsScreen: (Long) -> Unit = { journalId ->
+        val argument = "{$journalId}"
+//        val argument = "${Destination.JournalDetails.destinationName}/$journalId}"
+        navController.navigate(Destination.JournalDetails.destinationName)
+    }
+
+    val factScreen: () -> Unit = {
+        navController.navigate(Destination.Facts.destinationName)
+    }
+
+    val navigateUp: () -> Unit = {
+        navController.navigateUp()
+    }
 
 }
 

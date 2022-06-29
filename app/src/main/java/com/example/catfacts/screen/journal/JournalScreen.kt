@@ -2,64 +2,86 @@ package com.example.catfacts.screen.journal
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.catfacts.data.model.Journal
-import com.example.catfacts.ui.common.JournalItem
+import com.example.catfacts.ui.HomeActions
 import com.example.catfacts.ui.common.ErrorScreen
+import com.example.catfacts.ui.common.JournalItem
 import com.example.catfacts.ui.common.LoadingScreen
+import com.example.catfacts.ui.icon.IconAddJournal
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun JournalScreen(
-    viewModel: JournalViewModel,
+    homeActions: HomeActions,
     modifier: Modifier = Modifier
 ) {
 
+    val viewModel: JournalViewModel = hiltViewModel()
+
     val uiState: JournalScreenUiState by viewModel.uiState.collectAsState()
 
-    when (val journalUiState = uiState.journalsState) {
-        is JournalUiState.Loading -> {
-            LoadingScreen {}
-        }
-
-        is JournalUiState.Success -> {
-
-            Column(modifier = modifier.padding(16.dp)) {
-                Button(
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = { viewModel.addRandomCapture() }) {
-                    Text("Add random capture")
+    Scaffold(
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    homeActions.journalCRUDScreen()
+                }
+            ) {
+                IconAddJournal()
+            }
+        }, content = {
+            when (val journalUiState = uiState.state) {
+                is JournalUiState.Loading -> {
+                    LoadingScreen {}
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                is JournalUiState.Success -> {
 
-                JournalList(
-                    journals = journalUiState.journals,
-                    onCaptureClicked = {}
-                )
+                    Column(
+                        modifier = modifier
+                            .fillMaxSize()
+                            .padding(4.dp),
+                        verticalArrangement = Arrangement.Top,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        JournalList(
+                            journals = journalUiState.journals,
+                            onCaptureClicked = { journal ->
+                                homeActions.journalDetailsScreen(journal.journalId)
+                            }
+                        )
+                    }
+
+                }
+
+                is JournalUiState.Error -> {
+                    ErrorScreen(
+                        exception = journalUiState.error,
+                        onRetryClicked = { }
+                    )
+                }
             }
-
         }
-
-        is JournalUiState.Error -> {
-            ErrorScreen(
-                exception = journalUiState.error,
-                onRetryClicked = { }
-            )
-        }
-    }
+    )
 }
+
 
 @Composable
 fun JournalList(
     journals: List<Journal>,
-    onCaptureClicked: () -> Unit,
+    onCaptureClicked: (Journal) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -77,23 +99,16 @@ fun JournalList(
 
         journals.forEach {
             item {
+                Spacer(modifier = Modifier.padding(4.dp))
                 JournalItem(
                     journal = it,
                     onJournalItemClicked = {
-                        onCaptureClicked()
-                    }
+                        onCaptureClicked(it)
+                    },
+                    modifier = modifier
                 )
             }
         }
-
-        item {
-            Spacer(
-                Modifier.windowInsetsPadding(
-                    WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom)
-                )
-            )
-        }
-
     }
 
 }

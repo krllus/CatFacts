@@ -1,4 +1,4 @@
-package com.example.catfacts.ui.common
+package com.example.catfacts.ui.icon
 
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
