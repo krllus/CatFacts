@@ -5,6 +5,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.TopAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -13,12 +14,12 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.compose.rememberNavController
 import com.example.catfacts.R
 import com.example.catfacts.ui.HomeActions
 import com.example.catfacts.ui.common.ErrorScreen
@@ -27,15 +28,13 @@ import com.example.catfacts.ui.common.LoadingScreen
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun previewJournalCrudScreen(
-    @PreviewParameter(HomeActionsPreviewParameter::class) homeActions: HomeActions
+
 ) {
+    val navHost = rememberNavController()
+
+    val homeActions = HomeActions(navHost)
+
     JournalCRUDScreen(homeActions)
-}
-
-class HomeActionsPreviewParameter() : PreviewParameterProvider<HomeActions> {
-    override val values: Sequence<HomeActions> = sequenceOf(
-
-    )
 }
 
 @Composable
@@ -63,20 +62,28 @@ fun JournalCRUDScreen(
 
     val picturePath by journalViewModel.pictureFile.observeAsState()
 
-
+    val bitmap = picturePath?.let {
+        BitmapFactory.decodeFile(it.absolutePath).asImageBitmap()
+    }
 
     when (val journalUiState = uiCrudState.state) {
         is JournalCRUDState.Editing -> {
 
-            Column {
+            Column(modifier = Modifier.padding(16.dp)) {
 
-                //  https://www.goodrequest.com/blog/jetpack-compose-basics-showing-images
+                // https://www.goodrequest.com/blog/jetpack-compose-basics-showing-images
                 // https://stackoverflow.com/a/68645041/2811504
 
-                picturePath?.let {
-
-                    val bitmap = BitmapFactory.decodeFile(it.absolutePath).asImageBitmap()
-
+                if (bitmap == null) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_cat),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
+                            .padding(4.dp),
+                    )
+                } else {
                     Image(
                         bitmap = bitmap,
                         contentDescription = null,
@@ -86,8 +93,6 @@ fun JournalCRUDScreen(
                             .padding(4.dp),
                     )
                 }
-
-                Spacer(modifier = Modifier.height(8.dp))
 
                 TextField(
                     value = title,

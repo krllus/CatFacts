@@ -9,7 +9,7 @@ import org.threeten.bp.OffsetDateTime
 @Entity(tableName = "table_journal")
 data class Journal(
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "id")
+    @ColumnInfo(name = "journal_id")
     val journalId: Long = 0,
 
     @ColumnInfo(name = "title")
@@ -35,7 +35,7 @@ data class Journal(
         }
     }
 
-    fun displayDescription() : Boolean {
+    fun displayDescription(): Boolean {
         return description.isNotEmpty()
     }
 }

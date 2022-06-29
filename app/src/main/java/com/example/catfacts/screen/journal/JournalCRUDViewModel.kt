@@ -67,12 +67,10 @@ class JournalCRUDViewModel @Inject constructor(
                     throw Exception("Title is empty")
                 }
 
-                // validate picture
+                // TODO validate picture
                 val pictureAbsolutePath = _pictureFile.value?.absolutePath
 
-
                 journalRepository.saveJournal(title, description, pictureAbsolutePath)
-
 
                 _uiCRUDState.value = JournalCRUDUiState(state = JournalCRUDState.Saved)
             } catch (e: Exception) {

@@ -5,14 +5,16 @@ import com.example.catfacts.data.model.Journal
 import com.example.catfacts.di.IoDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 interface JournalRepository {
+
+    suspend fun getJournal(journalId: Long): Journal?
+
     fun getJournals(): Flow<List<Journal>>
 
-    suspend fun addRandomJournal(): Journal
-
-    suspend fun saveJournal(title: String, description: String, pictureAbsolutePath: String?)
+    suspend fun saveJournal(title: String, description: String, pictureAbsolutePath: String?): Long
 }
 
 class DefaultJournalRepository @Inject constructor(
@@ -20,18 +22,17 @@ class DefaultJournalRepository @Inject constructor(
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : JournalRepository {
 
-    override fun getJournals() = journalDao.getJournals()
-    override suspend fun addRandomJournal(): Journal {
-        val journal = Journal.randomCapture()
-        journalDao.insertJournal(journal)
-        return journal
+    override suspend fun getJournal(journalId: Long): Journal? = withContext(dispatcher) {
+        journalDao.getJournal(journalId)
     }
+
+    override fun getJournals() = journalDao.getJournals()
 
     override suspend fun saveJournal(
         title: String,
         description: String,
         pictureAbsolutePath: String?
-    ) {
+    ) = withContext(dispatcher) {
         val journal = Journal(
             title = title,
             description = description,

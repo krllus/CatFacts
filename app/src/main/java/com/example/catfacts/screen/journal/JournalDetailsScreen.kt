@@ -5,8 +5,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
@@ -15,7 +15,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.rememberImagePainter
+import com.example.catfacts.R
 import com.example.catfacts.ui.HomeActions
+import com.example.catfacts.ui.common.ErrorScreen
+import com.example.catfacts.ui.common.LoadingScreen
+import java.io.File
 
 @Composable
 fun JournalDetailsScreen(
@@ -25,16 +30,44 @@ fun JournalDetailsScreen(
 
     val journalViewModel: JournalDetailsViewModel = hiltViewModel()
 
-    val journal by journalViewModel.journal.observeAsState()
+    journalViewModel.setJournalId(journalId)
 
-    val imagePainter = ColorPainter(Color.Red)
+    val uiState: JournalDetailsScreenUiState by journalViewModel.uiState.collectAsState()
 
-    // initialize journal on viewModel
+    when (val state = uiState.state) {
+        is JournalDetailsUiState.Success -> {
+            state.journal?.let { journal ->
 
-    Column {
+                val imageData = journal.imageFilePath?.let { File(it) }
 
-        journal?.let { journal ->
-            JournalDetails(journal.title, journal.description, imagePainter)
+                val painter = rememberImagePainter(data = imageData, builder = {
+                    crossfade(true)
+                    placeholder(R.drawable.ic_launcher_background)
+                    fallback(R.drawable.ic_baseline_image_24)
+                    error(R.drawable.ic_baseline_image_24)
+                })
+
+                JournalDetails(
+                    title = journal.title,
+                    description = journal.description,
+                    imagePainter = painter
+                )
+            }
+
+
+        }
+
+        is JournalDetailsUiState.Loading -> {
+            LoadingScreen {}
+        }
+
+        is JournalDetailsUiState.Error -> {
+            ErrorScreen(
+                exception = state.error,
+                onRetryClicked = {
+                    homeActions.navigateUp()
+                }
+            )
         }
 
     }

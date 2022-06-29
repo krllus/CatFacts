@@ -11,6 +11,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -25,6 +26,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.catfacts.R
 import com.example.catfacts.screen.fact.FactScreen
 import com.example.catfacts.screen.journal.JournalCRUDScreen
 import com.example.catfacts.screen.journal.JournalDetailsScreen
@@ -55,9 +57,28 @@ class HomeActivity : ComponentActivity() {
 
                 Surface {
                     Scaffold(
-//                        bottomBar = {
-//                            BottomNavigationBar(navController = navController)
-//                        },
+                        topBar = {
+                            TopAppBar(
+                                title = {
+                                    Text(text = stringResource(id = R.string.app_name))
+                                },
+                                navigationIcon = {
+                                    IconButton(
+                                        onClick = {
+                                            navController.navigate(
+                                                Destination.JournalList.destinationName
+                                            )
+                                        }
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.ic_cat),
+                                            contentDescription = stringResource(id = R.string.take_picture_content_description),
+                                            tint = androidx.compose.material3.MaterialTheme.colorScheme.onPrimary
+                                        )
+                                    }
+                                }
+                            )
+                        },
                         content = { padding ->
                             NavHostContainer(
                                 navController = navController,
@@ -210,7 +231,6 @@ class HomeActions(navController: NavHostController) {
 
     val journalDetailsScreen: (Long) -> Unit = { journalId ->
         val argument = "{$journalId}"
-//        val argument = "${Destination.JournalDetails.destinationName}/$journalId}"
         navController.navigate(Destination.JournalDetails.destinationName)
     }
 
