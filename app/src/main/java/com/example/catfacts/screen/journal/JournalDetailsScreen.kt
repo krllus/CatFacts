@@ -1,5 +1,6 @@
 package com.example.catfacts.screen.journal
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -31,6 +32,8 @@ fun JournalDetailsScreen(
     val journalViewModel: JournalDetailsViewModel = hiltViewModel()
 
     journalViewModel.setJournalId(journalId)
+
+    Log.d("JournalDetailsScreen", "journalId: $journalId")
 
     val uiState: JournalDetailsScreenUiState by journalViewModel.uiState.collectAsState()
 

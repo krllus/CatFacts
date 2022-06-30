@@ -22,5 +22,6 @@
     <string name="label_title">Title</string>
     <string name="label_description">Description</string>
     <string name="button_save">Save</string>
+    <string name="journal_crud_no_picture_selected">Take a Picture</string>
 
 </resources>
