@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 interface JournalRepository {
 
-    suspend fun getJournal(journalId: Long): Journal?
+    suspend fun getJournal(journalId: Long): Flow<Journal?>
 
     fun getJournals(): Flow<List<Journal>>
 
@@ -22,9 +22,9 @@ class DefaultJournalRepository @Inject constructor(
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : JournalRepository {
 
-    override suspend fun getJournal(journalId: Long): Journal? = withContext(dispatcher) {
+    override suspend fun getJournal(journalId: Long): Flow<Journal?> =
         journalDao.getJournal(journalId)
-    }
+
 
     override fun getJournals() = journalDao.getJournals()
 

@@ -25,6 +25,7 @@ object Constants {
 sealed class Destination(val destinationName: String) {
     object JournalList : Destination("journal")
     object JournalCrud : Destination("journal_crud")
+//    object JournalDetails : Destination("journal_details")
     object JournalDetails : Destination("journal_details/{${HomeActivity.KEY_JOURNAL_ID}}")
     object Facts : Destination("facts")
 }

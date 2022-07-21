@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.catfacts.data.JournalRepository
 import com.example.catfacts.data.model.Journal
+import com.example.catfacts.utils.result.Result
+import com.example.catfacts.utils.result.asResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -29,12 +31,15 @@ class JournalDetailsViewModel @Inject constructor(
 
     fun setJournalId(journalId: Long) {
         viewModelScope.launch {
-            try {
-                _uiState.value = JournalDetailsScreenUiState(JournalDetailsUiState.Loading)
-                val journal = journalRepository.getJournal(journalId)
-                _uiState.value = JournalDetailsScreenUiState(JournalDetailsUiState.Success(journal))
-            } catch (e: Exception) {
-                _uiState.value = JournalDetailsScreenUiState(JournalDetailsUiState.Error(e))
+            journalRepository.getJournal(journalId).asResult().collect { result ->
+                val state = when (result) {
+                    is Result.Success -> JournalDetailsUiState.Success(result.data)
+                    is Result.Error -> JournalDetailsUiState.Error(
+                        result.exception ?: Exception("Failed to get journal")
+                    )
+                    is Result.Loading -> JournalDetailsUiState.Loading
+                }
+                _uiState.value = JournalDetailsScreenUiState(state)
             }
         }
     }

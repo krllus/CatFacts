@@ -211,7 +211,7 @@ fun NavHostContainer(
             composable(
                 route = Destination.JournalDetails.destinationName,
                 arguments = listOf(
-                    navArgument(HomeActivity.KEY_JOURNAL_ID) { type = NavType.StringType })
+                    navArgument(HomeActivity.KEY_JOURNAL_ID) { type = NavType.LongType })
             ) { backStackEntry ->
                 val arguments = requireNotNull(backStackEntry.arguments)
                 JournalDetailsScreen(arguments.getLong(HomeActivity.KEY_JOURNAL_ID), homeActions)
@@ -230,8 +230,15 @@ class HomeActions(navController: NavHostController) {
     }
 
     val journalDetailsScreen: (Long) -> Unit = { journalId ->
-        val argument = "{$journalId}"
-        navController.navigate(Destination.JournalDetails.destinationName)
+
+        val destination = Destination.JournalDetails.destinationName
+
+        val destinationCombined = destination.replace(
+            oldValue = "{${HomeActivity.KEY_JOURNAL_ID}}",
+            newValue = journalId.toString()
+        )
+
+        navController.navigate(destinationCombined)
     }
 
     val factScreen: () -> Unit = {

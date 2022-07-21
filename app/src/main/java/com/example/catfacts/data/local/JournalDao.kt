@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 interface JournalDao {
 
     @Query("SELECT * FROM table_journal where journal_id=:journalId")
-    fun getJournal(journalId: Long): Journal?
+    fun getJournal(journalId: Long): Flow<Journal?>
 
     @Query("SELECT * FROM table_journal")
     fun getJournals(): Flow<List<Journal>>

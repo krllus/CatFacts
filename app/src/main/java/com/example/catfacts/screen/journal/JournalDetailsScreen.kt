@@ -1,10 +1,12 @@
 package com.example.catfacts.screen.journal
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -30,7 +32,11 @@ fun JournalDetailsScreen(
 
     val journalViewModel: JournalDetailsViewModel = hiltViewModel()
 
-    journalViewModel.setJournalId(journalId)
+    // https://stackoverflow.com/a/69043272/2811504
+    LaunchedEffect(Unit){
+        Log.d("JournalDetailsScreen", "LaunchedEffect")
+        journalViewModel.setJournalId(journalId)
+    }
 
     val uiState: JournalDetailsScreenUiState by journalViewModel.uiState.collectAsState()
 
