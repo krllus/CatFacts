@@ -38,6 +38,8 @@ fun JournalDetailsScreen(
         journalViewModel.setJournalId(journalId)
     }
 
+    Log.d("JournalDetailsScreen", "journalId: $journalId")
+
     val uiState: JournalDetailsScreenUiState by journalViewModel.uiState.collectAsState()
 
     when (val state = uiState.state) {

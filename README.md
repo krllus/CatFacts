@@ -3,5 +3,5 @@
 ## API
 - https://catfact.ninja/
 
-## Lootie Resources
+## Lottie Resources
 - https://lottiefiles.com/75212-cat-loader
