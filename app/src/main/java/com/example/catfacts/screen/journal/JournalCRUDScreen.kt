@@ -34,11 +34,6 @@ fun JournalCRUDScreen(
 
     val viewModel: JournalCRUDViewModel = hiltViewModel()
 
-    DisposableEffect(key1 = viewModel) {
-        viewModel.onStart()
-        onDispose { viewModel.onStop() }
-    }
-
     val uiCrudState: JournalCRUDUiState by viewModel.uiCRUDState.collectAsState()
 
     val pictureCaptureStatus by viewModel.pictureCaptureStatus.observeAsState()

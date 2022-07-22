@@ -92,46 +92,6 @@ class HomeActivity : ComponentActivity() {
         }
     }
 
-    private fun dispatchTakePictureIntent() {
-        val ctx = this
-        val pm = ctx.packageManager
-
-        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
-            takePictureIntent.resolveActivity(pm)?.also {
-
-                val photoFile: File? = try {
-                    createImageFile()
-                } catch (ex: java.io.IOException) {
-                    null
-                }
-                photoFile?.also {
-                    val photoURI: Uri = FileProvider.getUriForFile(
-                        ctx,
-                        "${ctx.packageName}.file_provider",
-                        it
-                    )
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-                    // takePicture.launch(photoURI)
-                }
-                Log.d("HomeActivity", "photoFile: ${photoFile?.path}")
-            }
-        }
-    }
-
-    @Throws(IOException::class)
-    private fun createImageFile(): File {
-        // Create an image file name
-        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-        val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        return File.createTempFile(
-            "JPEG_${timeStamp}_", /* prefix */
-            ".jpg", /* suffix */
-            storageDir /* directory */
-        ).apply {
-            // viewModel.setPictureFile(this)
-        }
-    }
-
 }
 
 @Composable

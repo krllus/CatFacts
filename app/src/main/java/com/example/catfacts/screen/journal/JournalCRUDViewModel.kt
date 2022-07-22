@@ -1,6 +1,5 @@
 package com.example.catfacts.screen.journal
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.example.catfacts.data.JournalRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -47,12 +46,8 @@ class JournalCRUDViewModel @Inject constructor(
             initialValue = JournalCRUDUiState(state = JournalCRUDState.Editing)
         )
 
-    init {
-        Log.d("JournalCRUDViewModel", "init")
-    }
 
     fun setPictureFile(file: File) {
-        Log.d("JournalCRUDViewModel", "setPictureFile: ${file.absolutePath}")
         savedStateHandle[PICTURE_PATH_SAVED_STATE_KEY] = file.absolutePath
     }
 
@@ -100,14 +95,6 @@ class JournalCRUDViewModel @Inject constructor(
 
     fun resetCrudState() {
         _uiCRUDState.value = JournalCRUDUiState(state = JournalCRUDState.Editing)
-    }
-
-    fun onStart() {
-        Log.d("JournalCRUDViewModel", "onStart")
-    }
-
-    fun onStop() {
-        Log.d("JournalCRUDViewModel", "onStop")
     }
 
     companion object {
