@@ -24,4 +24,6 @@
     <string name="button_save">Save</string>
     <string name="journal_crud_no_picture_selected">Take a Picture</string>
 
+    <string name="lorem_long">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Et netus et malesuada fames ac turpis. Viverra maecenas accumsan lacus vel facilisis. Mauris rhoncus aenean vel elit. Consequat semper viverra nam libero justo. Vitae purus faucibus ornare suspendisse sed nisi lacus sed. Diam ut venenatis tellus in metus vulputate. Euismod elementum nisi quis eleifend quam adipiscing vitae. Tellus at urna condimentum mattis pellentesque id. At varius vel pharetra vel turpis nunc eget lorem dolor.</string>
+
 </resources>
