@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.core.content.FileProvider
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -201,11 +202,11 @@ fun NavHostContainer(
             }
 
             composable(Destination.JournalList.destinationName) {
-                JournalScreen(homeActions)
+                JournalScreen(viewModel = hiltViewModel(), homeActions = homeActions)
             }
 
             composable(Destination.JournalCrud.destinationName) {
-                JournalCRUDScreen(homeActions)
+                JournalCRUDScreen(viewModel = hiltViewModel(), homeActions = homeActions)
             }
 
             composable(

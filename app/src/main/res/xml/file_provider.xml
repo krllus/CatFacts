@@ -4,4 +4,13 @@
     <external-files-path
         name="cat_pictures"
         path="/" />
+
+<!--    <files-path-->
+<!--        name="cat_pictures"-->
+<!--        path="images/" />-->
+
+<!--    <cache-path-->
+<!--        name="cat_pictures"-->
+<!--        path="images/" />-->
+
 </paths>

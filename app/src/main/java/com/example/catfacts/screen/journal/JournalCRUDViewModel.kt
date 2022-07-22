@@ -1,5 +1,6 @@
 package com.example.catfacts.screen.journal
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -35,14 +36,24 @@ class JournalCRUDViewModel @Inject constructor(
             initialValue = JournalCRUDUiState(state = JournalCRUDState.Editing)
         )
 
+    init {
+        Log.d("JournalCRUDViewModel", "init")
+    }
 
     fun setPictureFile(file: File?) {
+        file?.let {
+            Log.d("JournalCRUDViewModel", "setPictureFile: ${it.absolutePath}")
+        }
         _pictureFile.value = file
     }
 
     fun resetPicture() {
         _pictureFile.value = null
         changePictureCaptureStatus(PictureCaptureStatus.Idle)
+    }
+
+    fun changePictureStatusToCapturing() {
+        changePictureCaptureStatus(PictureCaptureStatus.Capturing)
     }
 
     fun changePictureStatusToCaptured() {

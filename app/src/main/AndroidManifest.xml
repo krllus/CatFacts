@@ -45,7 +45,7 @@
         </activity>
 
         <provider
-            android:name="androidx.core.content.FileProvider"
+            android:name=".provider.CatFactsFileProvider"
             android:authorities="${applicationId}.file_provider"
             android:exported="false"
             android:grantUriPermissions="true">
