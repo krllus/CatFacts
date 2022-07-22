@@ -1,6 +1,5 @@
 package com.example.catfacts.screen.journal
 
-import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.border
@@ -30,17 +29,21 @@ import com.example.catfacts.ui.common.LoadingScreen
 
 @Composable
 fun JournalCRUDScreen(
-    viewModel: JournalCRUDViewModel = hiltViewModel(),
     homeActions: HomeActions
 ) {
+
+    val viewModel: JournalCRUDViewModel = hiltViewModel()
+
+    DisposableEffect(key1 = viewModel) {
+        viewModel.onStart()
+        onDispose { viewModel.onStop() }
+    }
 
     val uiCrudState: JournalCRUDUiState by viewModel.uiCRUDState.collectAsState()
 
     val pictureCaptureStatus by viewModel.pictureCaptureStatus.observeAsState()
 
-    var imageUri by remember {
-        mutableStateOf<Uri?>(null)
-    }
+    val picturePath by viewModel.pictureFilePath.observeAsState()
 
     val takePicture = rememberLauncherForActivityResult(
         ActivityResultContracts.TakePicture()
@@ -63,13 +66,14 @@ fun JournalCRUDScreen(
     // https://www.goodrequest.com/blog/jetpack-compose-basics-showing-images
     // https://stackoverflow.com/a/68645041/2811504
     // https://fvilarino.medium.com/using-activity-result-contracts-in-jetpack-compose-14b179fb87de
+    // https://medium.com/androiddevelopers/viewmodels-persistence-onsaveinstancestate-restoring-ui-state-and-loaders-fc7cc4a6c090
 
     when (val journalUiState = uiCrudState.state) {
         is JournalCRUDState.Editing -> {
 
             Column(modifier = Modifier.padding(16.dp)) {
 
-                if (pictureCaptureStatus != PictureCaptureStatus.Captured || imageUri == null) {
+                if (pictureCaptureStatus != PictureCaptureStatus.Captured || picturePath == null) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier
@@ -84,23 +88,28 @@ fun JournalCRUDScreen(
                                 val file = CatFactsFileProvider.getImageFile(ctx)
                                 viewModel.changePictureStatusToCapturing()
                                 viewModel.setPictureFile(file)
-                                imageUri = CatFactsFileProvider.getImageUri(ctx, file)
-                                takePicture.launch(imageUri)
+                                val pictureUri = CatFactsFileProvider.getImageUri(ctx, file)
+                                takePicture.launch(pictureUri)
                             }
                     ) {
                         TakePicture()
                     }
                 }
 
-                if (pictureCaptureStatus == PictureCaptureStatus.Captured && imageUri != null) {
-                    AsyncImage(
-                        model = imageUri,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(196.dp)
-                            .padding(4.dp),
-                        contentDescription = null
-                    )
+                if (pictureCaptureStatus == PictureCaptureStatus.Captured && picturePath != null) {
+                    picturePath?.let { path ->
+                        val picture = CatFactsFileProvider.getFileFromAbsolutePath(path)
+                        val pictureUri = CatFactsFileProvider.getImageUri(ctx, picture)
+
+                        AsyncImage(
+                            model = pictureUri,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(196.dp)
+                                .padding(4.dp),
+                            contentDescription = null
+                        )
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))

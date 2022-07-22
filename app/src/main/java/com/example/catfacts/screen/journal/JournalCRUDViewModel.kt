@@ -1,10 +1,7 @@
 package com.example.catfacts.screen.journal
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.catfacts.data.JournalRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,17 +14,31 @@ import javax.inject.Inject
 
 @HiltViewModel
 class JournalCRUDViewModel @Inject constructor(
+    private val savedStateHandle: SavedStateHandle,
     private val journalRepository: JournalRepository
 ) : ViewModel() {
+
 
     private val _uiCRUDState =
         MutableStateFlow(JournalCRUDUiState(state = JournalCRUDState.Editing))
 
-    private val _pictureFile = MutableLiveData<File?>()
-    val pictureFile: LiveData<File?> = _pictureFile
+    val pictureFilePath: LiveData<String?> = savedStateHandle.getLiveData(
+        PICTURE_PATH_SAVED_STATE_KEY
+    )
 
-    private val _pictureCaptureStatus = MutableLiveData<PictureCaptureStatus>()
-    val pictureCaptureStatus: LiveData<PictureCaptureStatus> = _pictureCaptureStatus
+    private val pictureCaptureStatusValue: LiveData<Int> = savedStateHandle.getLiveData(
+        PICTURE_CAPTURE_STATUS_STATE_KEY
+    )
+
+    val pictureCaptureStatus: LiveData<PictureCaptureStatus> =
+        Transformations.map(pictureCaptureStatusValue) {
+            when (it) {
+                0 -> PictureCaptureStatus.Idle
+                1 -> PictureCaptureStatus.Capturing
+                2 -> PictureCaptureStatus.Captured
+                else -> PictureCaptureStatus.Error
+            }
+        }
 
     val uiCRUDState: StateFlow<JournalCRUDUiState> = _uiCRUDState
         .stateIn(
@@ -40,15 +51,13 @@ class JournalCRUDViewModel @Inject constructor(
         Log.d("JournalCRUDViewModel", "init")
     }
 
-    fun setPictureFile(file: File?) {
-        file?.let {
-            Log.d("JournalCRUDViewModel", "setPictureFile: ${it.absolutePath}")
-        }
-        _pictureFile.value = file
+    fun setPictureFile(file: File) {
+        Log.d("JournalCRUDViewModel", "setPictureFile: ${file.absolutePath}")
+        savedStateHandle[PICTURE_PATH_SAVED_STATE_KEY] = file.absolutePath
     }
 
     fun resetPicture() {
-        _pictureFile.value = null
+        savedStateHandle[PICTURE_PATH_SAVED_STATE_KEY] = null
         changePictureCaptureStatus(PictureCaptureStatus.Idle)
     }
 
@@ -65,7 +74,7 @@ class JournalCRUDViewModel @Inject constructor(
     }
 
     private fun changePictureCaptureStatus(status: PictureCaptureStatus) {
-        _pictureCaptureStatus.value = status
+        savedStateHandle[PICTURE_CAPTURE_STATUS_STATE_KEY] = status.value
     }
 
     fun saveJournal(title: String, description: String) {
@@ -78,10 +87,9 @@ class JournalCRUDViewModel @Inject constructor(
                     throw Exception("Title is empty")
                 }
 
-                // TODO validate picture
-                val pictureAbsolutePath = _pictureFile.value?.absolutePath
+                val pictureFilePath = pictureFilePath.value
 
-                journalRepository.saveJournal(title, description, pictureAbsolutePath)
+                journalRepository.saveJournal(title, description, pictureFilePath)
 
                 _uiCRUDState.value = JournalCRUDUiState(state = JournalCRUDState.Saved)
             } catch (e: Exception) {
@@ -92,6 +100,19 @@ class JournalCRUDViewModel @Inject constructor(
 
     fun resetCrudState() {
         _uiCRUDState.value = JournalCRUDUiState(state = JournalCRUDState.Editing)
+    }
+
+    fun onStart() {
+        Log.d("JournalCRUDViewModel", "onStart")
+    }
+
+    fun onStop() {
+        Log.d("JournalCRUDViewModel", "onStop")
+    }
+
+    companion object {
+        const val PICTURE_PATH_SAVED_STATE_KEY = "picture_path_saved_state_key"
+        const val PICTURE_CAPTURE_STATUS_STATE_KEY = "picture_capture_status_state_key"
     }
 
 }
@@ -108,9 +129,9 @@ data class JournalCRUDUiState(
     val state: JournalCRUDState
 )
 
-sealed class PictureCaptureStatus {
-    object Idle : PictureCaptureStatus()
-    object Capturing : PictureCaptureStatus()
-    object Captured : PictureCaptureStatus()
-    object Error : PictureCaptureStatus()
+sealed class PictureCaptureStatus(val value: Int) {
+    object Idle : PictureCaptureStatus(0)
+    object Capturing : PictureCaptureStatus(1)
+    object Captured : PictureCaptureStatus(2)
+    object Error : PictureCaptureStatus(3)
 }

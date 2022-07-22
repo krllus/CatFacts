@@ -20,7 +20,7 @@ class CatFactsFileProvider : FileProvider(
 
             val storageDir: File? = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
             storageDir?.mkdirs()
-            
+
 //            val storageDir = File(context.cacheDir, "images")
 //            storageDir.mkdirs()
 
@@ -33,6 +33,14 @@ class CatFactsFileProvider : FileProvider(
                 ".jpg", /* suffix */
                 storageDir /* directory */
             )
+        }
+
+        fun getImageFileAbsolutPath(file : File) : String {
+            return file.absolutePath
+        }
+
+        fun getFileFromAbsolutePath(absolutePath: String) : File {
+            return File(absolutePath)
         }
 
         fun getImageUri(context: Context, file: File): Uri {

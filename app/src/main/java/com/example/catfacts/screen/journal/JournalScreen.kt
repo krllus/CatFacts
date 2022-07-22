@@ -22,10 +22,11 @@ import com.example.catfacts.ui.icon.IconAddJournal
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun JournalScreen(
-    viewModel: JournalViewModel = hiltViewModel(),
     homeActions: HomeActions,
     modifier: Modifier = Modifier
 ) {
+
+    val viewModel: JournalViewModel = hiltViewModel()
 
     val uiState: JournalScreenUiState by viewModel.uiState.collectAsState()
 

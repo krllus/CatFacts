@@ -202,11 +202,11 @@ fun NavHostContainer(
             }
 
             composable(Destination.JournalList.destinationName) {
-                JournalScreen(viewModel = hiltViewModel(), homeActions = homeActions)
+                JournalScreen(homeActions)
             }
 
             composable(Destination.JournalCrud.destinationName) {
-                JournalCRUDScreen(viewModel = hiltViewModel(), homeActions = homeActions)
+                JournalCRUDScreen(homeActions)
             }
 
             composable(
